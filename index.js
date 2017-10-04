@@ -38,54 +38,183 @@ function Jasmine2ScreenShotReporter(opts) {
         fullName: 'focused specs'
       };
 
-  var linkTemplate = _.template(
+    // Implementation using objects
+    var linkTemplate = _.template(
       '<li id="<%= id %>" ' +
       'class="<%= cssClass %>" ' +
       'data-spec="<%= specId %>" ' +
       'data-name="<%= name %>" ' +
       'data-browser="<%= browserName %>">' +
       '<%= mark %>' +
-      '<a href="<%= filename[\'main\'] %>"><%= name %></a>' +
-      '<% _.forEach(filename, function (val, key) { if (key != \'main\') { %>' +
-      ' [<a href="<%= val %>"><%= key %></a>] ' +
+      '<%= name %>' +
+      '<ul>' +
+      '<% _.forEach(filename\[\'main\'\], function (val, key) { %>' +
+      ' <li>[<%= key %>]' +
+      ' <ul>' +
+      ' <% _.forEach(val, function (val2, key2) { %>' +
+      '  <% if (val2.includes(uniqueName)) { %>' +
+      ' <li><a href="<%= val2 %>"><%= key2 %></a></li> ' +
       '<% } }) %>' +
+      '</ul> ' +
+      '</li>' +
+      '<% }) %>' +
+      '</ul>' +
+      // '<% _.forEach(filename, function (val, key) { if (key != \'main\') { %>' +
+      // ' [<a href="<%= val %>"><%= key %></a>] ' +
+      // '<% } }) %>' +
       '(<%= duration %> s)' +
       '<%= reason %>' +
       '<%= failedUrl %>' +
       '</li>'
-  );
+    );
+
+  // Original code
+  // var linkTemplate = _.template(
+  //     '<li id="<%= id %>" ' +
+  //     'class="<%= cssClass %>" ' +
+  //     'data-spec="<%= specId %>" ' +
+  //     'data-name="<%= name %>" ' +
+  //     'data-browser="<%= browserName %>">' +
+  //     '<%= mark %>' +
+  //     '<a href="<%= filename[\'main\'] %>"><%= name %></a>' +
+  //     '<% _.forEach(filename, function (val, key) { if (key != \'main\') { %>' +
+  //     ' [<a href="<%= val %>"><%= key %></a>] ' +
+  //     '<% } }) %>' +
+  //     '(<%= duration %> s)' +
+  //     '<%= reason %>' +
+  //     '<%= failedUrl %>' +
+  //     '</li>'
+  // );
+
+  // Implementation using arrays
+  // var inlineTemplate = _.template(
+  //   '<li id="<%= id %>" ' +
+  //   'class="<%= cssClass %>" ' +
+  //   'data-spec="<%= specId %>" ' +
+  //   'data-name="<%= name %>" ' +
+  //   'data-browser="<%= browserName %>">' +
+  //   '<%= mark %>' +
+  //   '<%= name %>' +
+  //   '<ul>' +
+  //   '<% _.forEach(filename\[\'main\'\][\'diff\'], function (val, key) { %>' +
+  //   ' <li>[<%= key %>]' +
+  //   ' <ul>' +
+  //   ' <% _.forEach(val, function (val2, key2) { %>' +
+  //   '  <% if (val2.includes(uniqueName)) { %>' +
+  //   ' <li><img src="<%= val2 %>"><%= key2 %></img></li> ' +
+  //   '<% } }) %>' +
+  //   '</ul> ' +
+  //   '</li>' +
+  //   '<% }) %>' +
+  //   '</ul>' +
+  //   '(<%= duration %> s)' +
+  //   '<%= reason %>' +
+  //   '<%= failedUrl %>' +
+  //   '</li>'
+  // );
 
   var inlineTemplate = _.template(
-      '<li id="<%= id %>" ' +
-      'class="<%= cssClass %>" ' +
-      'data-spec="<%= specId %>" ' +
-      'data-name="<%= name %>" ' +
-      'data-browser="<%= browserName %>">' +
-      '<%= mark %>' +
-      '<img src="<%= filename[\'main\'] %>"><%= name %></img>' +
-      '<% _.forEach(filename, function (val, key) { if (key != \'main\') { %>' +
-      ' [<img src="<%= val %>"><%= key %></img>] ' +
-      '<% } }) %>' +
-      '(<%= duration %> s)' +
-      '<%= reason %>' +
-      '<%= failedUrl %>' +
-      '</li>'
+    '<div id="<%= id %>" ' +
+    'class="<%= cssClass %>" ' +
+    'data-spec="<%= specId %>" ' +
+    'data-name="<%= name %>" ' +
+    'data-browser="<%= browserName %>">' +
+    '<%= mark %>' +
+    '<%= name %>' +
+    ' (<%= duration %> s)' +
+    '<%= reason %>' +
+    '<% _.forEach(filename\[\'main\'\]\[\'diff\'\], function (screenshotPath, screenshotName) { %>' +
+    ' <% if (screenshotName.includes(uniqueName)) { %>' +
+    ' <div class="case">' +
+    ' <span><%= screenshotName %></span>' +
+    '  <div class="screenshot"><img src="<%= filename\[\'main\'\]\[\'baseline\'\]\[screenshotName\] %>"></img>' +
+    '  <a href="<%= filename\[\'main\'\]\[\'baseline\'\]\[screenshotName\] %>"><span>Baseline</span></a></div> ' +
+    '  <div class="screenshot"><img src="<%= filename\[\'main\'\]\[\'actual\'\]\[screenshotName\] %>"></img>' +
+    '  <a href="<%= filename\[\'main\'\]\[\'actual\'\]\[screenshotName\] %>"><span>Actual</span></a></div> ' +
+    '  <div class="screenshot"><img src="<%= filename\[\'main\'\]\[\'diff\'\]\[screenshotName\] %>"></img>' +
+    '  <a href="<%= filename\[\'main\'\]\[\'diff\'\]\[screenshotName\] %>"><span>Difference</span></a></div> ' +
+    ' </div>' +
+    ' <% } %>' +
+    '<% }) %>' +
+    '<%= failedUrl %>' +
+    '</div>'
   );
 
+  // Implementation using objects
+  // var inlineTemplate = _.template(
+  //   '<li id="<%= id %>" ' +
+  //   'class="<%= cssClass %>" ' +
+  //   'data-spec="<%= specId %>" ' +
+  //   'data-name="<%= name %>" ' +
+  //   'data-browser="<%= browserName %>">' +
+  //   '<%= mark %>' +
+  //   '<%= name %>' +
+  //   '<ul>' +
+  //   '<% _.forEach(filename\[\'main\'\], function (val, key) { %>' +
+  //   ' <li>[<%= key %>]' +
+  //   ' <ul>' +
+  //   ' <% _.forEach(val, function (val2, key2) { %>' +
+  //   '  <% if (val2.includes(uniqueName)) { %>' +
+  //   ' <li><img src="<%= val2 %>"><%= key2 %></img></li> ' +
+  //   '<% } }) %>' +
+  //   '</ul> ' +
+  //   '</li>' +
+  //   '<% }) %>' +
+  //   '</ul>' +
+  //   '(<%= duration %> s)' +
+  //   '<%= reason %>' +
+  //   '<%= failedUrl %>' +
+  //   '</li>'
+  // );
+
+  // Original code
+  // var inlineTemplate = _.template(
+  //     '<li id="<%= id %>" ' +
+  //     'class="<%= cssClass %>" ' +
+  //     'data-spec="<%= specId %>" ' +
+  //     'data-name="<%= name %>" ' +
+  //     'data-browser="<%= browserName %>">' +
+  //     '<%= mark %>' +
+  //     '<img src="<%= filename[\'main\'] %>"><%= name %></img>' +
+  //     '<% _.forEach(filename, function (val, key) { if (key != \'main\') { %>' +
+  //     ' [<img src="<%= val %>"><%= key %></img>] ' +
+  //     '<% } }) %>' +
+  //     '(<%= duration %> s)' +
+  //     '<%= reason %>' +
+  //     '<%= failedUrl %>' +
+  //     '</li>'
+  // );
+
   var nonLinkTemplate = _.template(
-      '<li title="No screenshot was created for this test case." ' +
-      'id="<%= id %>" ' +
-      'class="<%= cssClass %>" ' +
-      'data-spec="<%= specId %>" ' +
-      'data-name="<%= name %>" ' +
-      'data-browser="<%= browserName %>">' +
-      '<%= mark %>' +
-      '<%= name %> ' +
-      '(<%= duration %> s)' +
-      '<%= reason %>' +
-      '<%= failedUrl %>' +
-      '</li>'
+    '<div title="No screenshot was created for this test case." ' +
+    'id="<%= id %>" ' +
+    'class="<%= cssClass %>" ' +
+    'data-spec="<%= specId %>" ' +
+    'data-name="<%= name %>" ' +
+    'data-browser="<%= browserName %>">' +
+    '<%= mark %>' +
+    '<%= name %> ' +
+    '(<%= duration %> s)' +
+    '<%= reason %>' +
+    '<%= failedUrl %>' +
+    '</div>'
   );
+
+  // Original code
+  // var nonLinkTemplate = _.template(
+  //     '<li title="No screenshot was created for this test case." ' +
+  //     'id="<%= id %>" ' +
+  //     'class="<%= cssClass %>" ' +
+  //     'data-spec="<%= specId %>" ' +
+  //     'data-name="<%= name %>" ' +
+  //     'data-browser="<%= browserName %>">' +
+  //     '<%= mark %>' +
+  //     '<%= name %> ' +
+  //     '(<%= duration %> s)' +
+  //     '<%= reason %>' +
+  //     '<%= failedUrl %>' +
+  //     '</li>'
+  // );
 
   var openReportTemplate = _.template(
       '<html>' +
@@ -173,6 +302,30 @@ function Jasmine2ScreenShotReporter(opts) {
   var reportTemplate = _.template(
       '<%= report %>'
   );
+
+  // var reasonsTemplate = _.template(
+  //   '<ul>' +
+  //   '<% _.forEach(reasons, function(reason, key) { %>' +
+  //   '<li><%- reason.message %> [<a href="javascript:showhide(\'<%= id %><%= key %>\')">stack</a>]<br/>' +
+  //   '<span style="display: none" id="<%= id %><%= key %>" class="stacktrace"><%- reason.stack %></span>' +
+
+  //   '<ul>' +
+  //   '<% _.forEach(filename\[\'main\'\], function (val, key) { %>' +
+  //   ' <li>[<%= key %>]' +
+  //   ' <ul>' +
+  //   ' <% _.forEach(val, function (val2, key2) { %>' +
+  //   '  <% if (val2.includes(uniqueName)) { %>' +
+  //   ' <li><a href="<%= val2 %>"><%= key2 %></a></li> ' +
+  //   '<% } }) %>' +
+  //   '</ul> ' +
+  //   '</li>' +
+  //   '<% }) %>' +
+  //   '</ul>' +
+
+  //   '</li>' +
+  //   '<% }); %>' +
+  //   '</ul>'
+  // );
 
   var reasonsTemplate = _.template(
       '<ul>' +
@@ -406,6 +559,7 @@ function Jasmine2ScreenShotReporter(opts) {
       id:       uuid.v1(),
       mark:     marks[spec.status],
       name:     escapeInvalidXmlChars(spec.fullName.replace(suiteName, '').trim()),
+      uniqueName: spec.fullName.substring(spec.fullName.indexOf('['), spec.fullName.indexOf(']')+1),
       reason:   printReasonsForFailure(spec),
       failedUrl:  printFailedUrl(spec),
       specId:   spec.id
@@ -584,36 +738,95 @@ function Jasmine2ScreenShotReporter(opts) {
       if (!browserInstance) {
         return;
       }
-      browserInstance.takeScreenshot().then(function (png) {
-        browserInstance.getCapabilities().then(function (capabilities) {
-          var screenshotPath,
-              metadataPath,
-              metadata;
 
-          var file = opts.pathBuilder(spec, suites, capabilities);
-          spec.filename[key] = file + '.png';
+      browserInstance.getCapabilities().then(function (capabilities) {
+        // Implementation using arrays
+        // var screenshotsBaseline = [];
+        // var screenshotsActual = [];
+        // var screenshotsDiff = [];
+        // var screenshotPath = path.resolve(opts.dest + '../ui/screenshots/');
+        // fs.readdirSync(screenshotPath + '/baseline/').forEach(file => {
+        //     if (file.includes('.png')) {
+        //       var filePath = path.join(screenshotPath, 'baseline', file);
+        //       screenshotsBaseline.push({ file, filePath });
+        //     }
+        // });
+        // fs.readdirSync(screenshotPath + '/actual/').forEach(file => {
+        //     if (file.includes('.png')) {
+        //       var filePath = path.join(screenshotPath, 'baseline', file);
+        //       screenshotsActual.push({ file, filePath });
+        //     }
+        // });
+        // fs.readdirSync(screenshotPath + '/diff/').forEach(file => {
+        //     if (file.includes('.png')) {
+        //       var filePath = path.join(screenshotPath, 'baseline', file);
+        //       screenshotsDiff.push({ file, filePath });
+        //     }
+        // });
+        // spec.filename[key] = {
+        //   baseline: screenshotsBaseline,
+        //   actual: screenshotsActual,
+        //   diff: screenshotsDiff
+        // };
 
-          screenshotPath = path.join(opts.dest, spec.filename[key]);
-          metadata       = opts.metadataBuilder(spec, suites, capabilities);
-
-          if (metadata) {
-            metadataPath = path.join(opts.dest, file + '.json');
-            mkdirp(path.dirname(metadataPath), function(err) {
-              if(err) {
-                throw new Error('Could not create directory for ' + metadataPath);
-              }
-              writeMetadata(metadata, metadataPath);
-            });
-          }
-
-          mkdirp(path.dirname(screenshotPath), function(err) {
-            if(err) {
-              throw new Error('Could not create directory for ' + screenshotPath);
+        // Implementation using objects
+        var screenshotsBaseline = {};
+        var screenshotsActual = {};
+        var screenshotsDiff = {};
+        var screenshotPath = path.resolve(opts.dest + '../ui/screenshots/');
+        fs.readdirSync(screenshotPath + '/baseline/').forEach(file => {
+            if (file.includes('.png')) {
+                screenshotsBaseline[file] = path.join(screenshotPath, 'baseline', file);
             }
-            writeScreenshot(png, spec.filename[key]);
-          });
         });
+        fs.readdirSync(screenshotPath + '/actual/').forEach(file => {
+            if (file.includes('.png')) {
+                screenshotsActual[file] = path.join(screenshotPath, 'actual', file);
+            }
+        });
+        fs.readdirSync(screenshotPath + '/diff/').forEach(file => {
+            if (file.includes('.png')) {
+                screenshotsDiff[file] = path.join(screenshotPath, 'diff', file);
+            }
+        });
+        spec.filename[key] = {
+          baseline: screenshotsBaseline,
+          actual: screenshotsActual,
+          diff: screenshotsDiff
+        };
       });
+
+      // Original code
+      // browserInstance.takeScreenshot().then(function (png) {
+      //   browserInstance.getCapabilities().then(function (capabilities) {
+      //     var screenshotPath,
+      //         metadataPath,
+      //         metadata;
+
+      //     var file = opts.pathBuilder(spec, suites, capabilities);
+          // spec.filename[key] = file + '.png';
+
+      //     screenshotPath = path.join(opts.dest, spec.filename[key]);
+      //     metadata       = opts.metadataBuilder(spec, suites, capabilities);
+
+      //     if (metadata) {
+      //       metadataPath = path.join(opts.dest, file + '.json');
+      //       mkdirp(path.dirname(metadataPath), function(err) {
+      //         if(err) {
+      //           throw new Error('Could not create directory for ' + metadataPath);
+      //         }
+      //         writeMetadata(metadata, metadataPath);
+      //       });
+      //     }
+
+      //     mkdirp(path.dirname(screenshotPath), function(err) {
+      //       if(err) {
+      //         throw new Error('Could not create directory for ' + screenshotPath);
+      //       }
+      //       writeScreenshot(png, spec.filename[key]);
+      //     });
+        // });
+      // });
 
       if(opts.reportFailedUrl) {
         if(spec.status === 'failed') {
