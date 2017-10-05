@@ -127,10 +127,12 @@ function Jasmine2ScreenShotReporter(opts) {
     ' <% if (screenshotName.includes(uniqueName)) { %>' +
     ' <div class="case">' +
     ' <span><%= screenshotName %></span>' +
+    '  <div class="baseline-and-actual">' +
     '  <div class="screenshot"><img src="<%= filename\[\'main\'\]\[\'baseline\'\]\[screenshotName\] %>"></img>' +
     '  <a href="<%= filename\[\'main\'\]\[\'baseline\'\]\[screenshotName\] %>"><span>Baseline</span></a></div> ' +
     '  <div class="screenshot"><img src="<%= filename\[\'main\'\]\[\'actual\'\]\[screenshotName\] %>"></img>' +
     '  <a href="<%= filename\[\'main\'\]\[\'actual\'\]\[screenshotName\] %>"><span>Actual</span></a></div> ' +
+    '  </div>' +
     '  <div class="screenshot"><img src="<%= filename\[\'main\'\]\[\'diff\'\]\[screenshotName\] %>"></img>' +
     '  <a href="<%= filename\[\'main\'\]\[\'diff\'\]\[screenshotName\] %>"><span>Difference</span></a></div> ' +
     ' </div>' +
@@ -773,10 +775,11 @@ function Jasmine2ScreenShotReporter(opts) {
         var screenshotsBaseline = {};
         var screenshotsActual = {};
         var screenshotsDiff = {};
+        var baselinePath = path.resolve(opts.dest + '../../screenshots/baseline')
         var screenshotPath = path.resolve(opts.dest + '../ui/screenshots/');
-        fs.readdirSync(screenshotPath + '/baseline/').forEach(file => {
+        fs.readdirSync(baselinePath).forEach(file => {
             if (file.includes('.png')) {
-                screenshotsBaseline[file] = path.join(screenshotPath, 'baseline', file);
+                screenshotsBaseline[file] = path.join(baselinePath, file);
             }
         });
         fs.readdirSync(screenshotPath + '/actual/').forEach(file => {
