@@ -775,7 +775,7 @@ function Jasmine2ScreenShotReporter(opts) {
         var screenshotsBaseline = {};
         var screenshotsActual = {};
         var screenshotsDiff = {};
-        var baselinePath = path.resolve(opts.dest + '../../screenshots/baseline')
+        var baselinePath = path.resolve(opts.dest + '../../e2e-tests/screenshots/baseline')
         var screenshotPath = path.resolve(opts.dest + '../ui/screenshots/');
         fs.readdirSync(baselinePath).forEach(file => {
             if (file.includes('.png')) {
