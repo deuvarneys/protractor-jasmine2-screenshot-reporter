@@ -771,28 +771,26 @@ function Jasmine2ScreenShotReporter(opts) {
         //   diff: screenshotsDiff
         // };
 
-        // Implementation using objects
         var screenshotsBaseline = {};
         var screenshotsActual = {};
         var screenshotsDiff = {};
-        var baselinePath = path.resolve(opts.dest + '../../e2e-tests/screenshots/baseline');
-        var screenshotPath = path.resolve(opts.dest + '../ui/screenshots/');
-        var screenshotPathBaseline = path.resolve(opts.dest + '../uitest/screenshots/')
-        var relativePathBaseline = path.relative(opts.dest, screenshotPathBaseline);
-        var relativePathScreenshots = path.relative(opts.dest, screenshotPath);
-        fs.readdirSync(screenshotPath + '/baseline/').forEach(file => {
+        var absPathBaseline = path.join(opts.dest, 'screenshots/baseline');
+        var absPathScreenshots = path.join(opts.dest, 'screenshots');
+        var relPathBaseline = './screenshots/baseline';
+        var relPathScreenshots = './screenshots';
+        fs.readdirSync(absPathBaseline).forEach(file => {
             if (file.includes('.png')) {
-                screenshotsBaseline[file] = path.join(relativePathScreenshots, 'baseline', file);
+                screenshotsBaseline[file] = path.join(relPathScreenshots, 'baseline', file);
             }
         });
-        fs.readdirSync(screenshotPath + '/actual/').forEach(file => {
+        fs.readdirSync(absPathScreenshots + '/actual').forEach(file => {
             if (file.includes('.png')) {
-                screenshotsActual[file] = path.join(relativePathScreenshots, 'actual', file);
+                screenshotsActual[file] = path.join(relPathScreenshots, 'actual', file);
             }
         });
-        fs.readdirSync(screenshotPath + '/diff/').forEach(file => {
+        fs.readdirSync(absPathScreenshots + '/diff').forEach(file => {
             if (file.includes('.png')) {
-                screenshotsDiff[file] = path.join(relativePathScreenshots, 'diff', file);
+                screenshotsDiff[file] = path.join(relPathScreenshots, 'diff', file);
             }
         });
         spec.filename[key] = {
@@ -801,6 +799,37 @@ function Jasmine2ScreenShotReporter(opts) {
           diff: screenshotsDiff
         };
       });
+
+        // Implementation using objects
+      //   var screenshotsBaseline = {};
+      //   var screenshotsActual = {};
+      //   var screenshotsDiff = {};
+      //   var baselinePath = path.resolve(opts.dest + '../../e2e-tests/screenshots/baseline');
+      //   var screenshotPath = path.resolve(opts.dest + '../ui/screenshots/');
+      //   var screenshotPathBaseline = path.resolve(opts.dest + '../uitest/screenshots/')
+      //   var relativePathBaseline = path.relative(opts.dest, screenshotPathBaseline);
+      //   var relativePathScreenshots = path.relative(opts.dest, screenshotPath);
+      //   fs.readdirSync(screenshotPath + '/baseline/').forEach(file => {
+      //       if (file.includes('.png')) {
+      //           screenshotsBaseline[file] = path.join(relativePathScreenshots, 'baseline', file);
+      //       }
+      //   });
+      //   fs.readdirSync(screenshotPath + '/actual/').forEach(file => {
+      //       if (file.includes('.png')) {
+      //           screenshotsActual[file] = path.join(relativePathScreenshots, 'actual', file);
+      //       }
+      //   });
+      //   fs.readdirSync(screenshotPath + '/diff/').forEach(file => {
+      //       if (file.includes('.png')) {
+      //           screenshotsDiff[file] = path.join(relativePathScreenshots, 'diff', file);
+      //       }
+      //   });
+      //   spec.filename[key] = {
+      //     baseline: screenshotsBaseline,
+      //     actual: screenshotsActual,
+      //     diff: screenshotsDiff
+      //   };
+      // });
 
       // Original code
       // browserInstance.takeScreenshot().then(function (png) {
